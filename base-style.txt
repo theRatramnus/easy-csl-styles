@@ -1,0 +1,72 @@
+<!--############Hier stehen die Informationen zum Stil/-->
+<?xml version="1.0" encoding="utf-8"?>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="note" version="1.02" demote-non-dropping-particle="never">
+  <info>
+    <title>${title}</title>
+    <id>${ID}</id>
+    <author>
+      <name>${name}</name>
+    </author>
+    <contributor>
+      <name>"Ludwig Patzold"</name>
+    </contributor>
+    <summary>${summary}</summary>
+    <published>${published}</published>
+    <updated>${updated}</updated>
+    <category/>
+  </info>
+
+<!--#############Hier steht die Zitation in den Fußnoten/-->
+  <citation>
+    <layout>
+    <layout/>
+  </citation>
+  
+<!--#############Hier beginnt die Bibliographie/-->
+  <bibliography>
+    <layout>
+      
+<!--##############Hier beginnen die Angaben zum Buch/-->
+        <choose>
+          <if type="book" match="any">
+          ${book}
+          </if>
+        </choose>
+
+<!--###############Hier beginnt der Zeitschriftenartikel/-->
+        <choose>
+          <if type="article-journal" match="any">
+            ${article-journal}
+          </if>
+        </choose>
+
+<!--###############Hier beginnt der Artikel im Sammelband/-->
+        <choose>
+          <if type="chapter" match="any">
+            ${chapter}
+          </if>
+        </choose>
+
+<!--###############Hier beginnt die Quellenedition/-->
+        <choose>
+          <if type="article-newspaper" match="any">
+            ${article-newspaper}
+          </if>
+        </choose>
+
+<!--###############Hier beginnt das Manuskript/-->
+        <choose>
+          <if type="manuscript" match="any">
+            ${manuscript}
+          </if>
+        </choose>
+
+<!--###############Hier beginnt der Lexikoneintrag/-->
+        <choose>
+          <if type="entry-encyclopedia" match="any">
+            ${entry-encyclopedia}
+          </if>
+        </choose>
+    </layout>
+  </bibliography>
+</style>
