@@ -24,6 +24,7 @@ const cslDictionary = {
 
 let nameDelimiter = " / "
 let et_al_min = 3
+let shortenNames = false
 
 function parsePlaceholdersAndText(text) {
     // Regular expression to capture both placeholders and regular text
@@ -173,7 +174,7 @@ function createCSLBlock(placeholder) {
 function createCSLGroupBlock(placeholder) {
     const nachvorvorname = placeholder.content[1].content === "Name"
     let result = `<names variable="${cslDictionary[placeholder.content[0].content]}">\n`;
-    result += `<name delimiter="${nameDelimiter}" et-al-min="${et_al_min}}" et-al-use-first="${1}" ${nachvorvorname ? "name-as-sort-order=\"first\"" : ""}/>` +"\n"
+    result += `<name delimiter="${nameDelimiter}" et-al-min="${et_al_min}}" et-al-use-first="${1}" ${nachvorvorname ? "name-as-sort-order=\"first\"" : ""} ${shortenNames ? `initialize-with=". "` : ""}/>` +"\n"
     for (const part of placeholder.content.slice(1)) {
         result += `<name-part name="${cslDictionary[part.content]}" ${part.styling ? part.styling : "" } />` + "\n"
     }
@@ -213,7 +214,7 @@ function createStyle(title, ID, name, summary, published, updated, book, article
         </terms>
     </locale>
     <title>${title}</title>
-    <id>${ID}/id>
+    <id>${ID}</id>
     <author>
       <name>${name}</name>
     </author>
@@ -313,6 +314,7 @@ function main() {
         
         // Using the results array to create the text
         const styleTitle = results[5]
+        shortenNames = document.getElementById('AutorGekuerzt').checked
         nameDelimiter = results[4];
         et_al_min = results[8];
         const text = createStyle(styleTitle, results[9], results[6], results[7], getCurrentYear(), getCurrentXMLTimestamp(), createCSL(results[0]), createCSL(results[1]), createCSL(results[2]), createCSL(results[3]), results[10]);

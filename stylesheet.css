@@ -4,6 +4,7 @@ body {
     background-color: rgb(225, 227, 236);
     color: black;
     margin: 100
+    
   }
   button {
     padding: 16px 42px;
@@ -17,13 +18,11 @@ body {
     position: relative;
     overflow: hidden;
  }
-  form {
-    input, textarea {
+  
+input, textarea {
       font-size: 120%;
       padding: 0.3rem;
       color: black;
       box-shadow: 0 0 0 .2rem wb5c9ed;
       transition: all 0.2s
     } 
-    color: black;
-  }
