@@ -406,17 +406,24 @@ function main() {
         
 
         //createCitation(book, article_journal, chapter, entry_encyclopedia, subsequent)
+        shortenNames = citInfo.shortenNames
+        nameDelimiter = citInfo["delimiter"];
+        et_al_min = citInfo["etal"];
+
         let bookCSL = createCSL(citInfo["book"])
         let articleCSL = createCSL(citInfo["article"])
         let chapterCSL = createCSL(citInfo["chapter"])
         let entry_encyclopediaCSL = createCSL(citInfo["entry_encyclopedia"])
-        const citation = createCitation(bookCSL, articleCSL, chapterCSL, entry_encyclopediaCSL, createCSL(document.getElementById("cit-Kurzzitat").value), createCSL(document.getElementById("cit-Querverweis").value))
+        
+        shortenNames = document.getElementById("cit-KurzzitatAbkuerzung").checked
+        const kurzzitat = createCSL(document.getElementById("cit-Kurzzitat").value)
+        
+
+
+        const citation = createCitation(bookCSL, articleCSL, chapterCSL, entry_encyclopediaCSL, kurzzitat, createCSL(document.getElementById("cit-Querverweis").value))
 
         console.log(citation)
 
-        shortenNames = citInfo.shortenNames
-        nameDelimiter = citInfo["delimiter"];
-        et_al_min = citInfo["etal"];
 
         //createStyle(title, ID, name, summary, published, updated, book, article_journal, chapter, entry_encyclopedia, et_al_term, citation, ibid_term)
 
@@ -429,6 +436,7 @@ function main() {
         articleCSL = createCSL(bibInfo["article"])
         chapterCSL = createCSL(bibInfo["chapter"])
         entry_encyclopediaCSL = createCSL(bibInfo["entry_encyclopedia"])
+
         let text = createStyle(styleTitle, generalInfo["IDDesStyles"], generalInfo["NameDesStyles"], generalInfo["BeschreibungdesStyles"], getCurrentYear(), getCurrentXMLTimestamp(), bookCSL, articleCSL, chapterCSL, entry_encyclopediaCSL, generalInfo["etalLabel"], citation, generalInfo["cit-EbdForm"])
         
 
@@ -451,6 +459,22 @@ function main() {
         element.click();
 
         document.body.removeChild(element);
+    });
+    document.getElementById('Uebernehmen-btn').addEventListener('click', function () {
+        const bibInfo = fetchStylingInfo("bib-")
+
+        
+        const ids = function (prefix) { return [prefix + "book", prefix + "article", prefix + "chapter", prefix + "encyclopedia-entry", prefix + "delimiter", prefix + "etal"] }
+
+        for (const id of ids("cit-")) {
+            const element = document.getElementById(id);
+            if ((element.tagName === "INPUT" || element.tagName === "TEXTAREA")) {
+                element.value = bibInfo[id.slice(4, id.length)]
+            }
+        }
+        
+
+
     });
 }
 
