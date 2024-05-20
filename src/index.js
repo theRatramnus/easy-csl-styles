@@ -1,5 +1,7 @@
 "use strict";
 
+const { type } = require('os');
+
 const cslDictionary = {
     "Jahr": {
         type: "date",
@@ -19,7 +21,12 @@ const cslDictionary = {
     "Verlagsname": "publisher",
     "Auflage": "edition",
     "Seitenzahlen": "page",
-    "Editor": "contributor"
+    "Editor": "contributor",
+    "Kurztitel": {
+        type: "variable",
+        content: `variable="title" form="short"`
+    },
+    "FN": "first-reference-note-number"
 };
 
 let nameDelimiter = " / "
@@ -136,6 +143,9 @@ function createVariableCSLBlock(placeholder) {
     else if (variableInfo.type === "date") {
         return `<date ${variableInfo.content} />`;
     }
+    else if (variableInfo.type === "variable") { 
+        return `<text ${variableInfo.content} />`
+    }
 }
 // Create CSL blocks for an array of placeholders
 function createCSLBlocks(placeholders) {
@@ -174,7 +184,7 @@ function createCSLBlock(placeholder) {
 function createCSLGroupBlock(placeholder) {
     const nachvorvorname = placeholder.content[1].content === "Name"
     let result = `<names variable="${cslDictionary[placeholder.content[0].content]}">\n`;
-    result += `<name delimiter="${nameDelimiter}" et-al-min="${et_al_min}}" et-al-use-first="${1}" ${nachvorvorname ? "name-as-sort-order=\"first\"" : ""} ${shortenNames ? `initialize-with=". "` : ""}/>` +"\n"
+    result += `<name delimiter="${nameDelimiter}" et-al-min="${et_al_min}}" et-al-use-first="${1}" ${nachvorvorname ? "name-as-sort-order=\"first\"" : ""} ${shortenNames ? `initialize-with=". "` : ""} ${placeholder.content.length > 2 ? "" : `form="short"`}/>` +"\n"
     for (const part of placeholder.content.slice(1)) {
         result += `<name-part name="${cslDictionary[part.content]}" ${part.styling ? part.styling : "" } />` + "\n"
     }
@@ -201,14 +211,14 @@ function createCSL(text) {
 
 
 
-function createStyle(title, ID, name, summary, published, updated, book, article_journal, chapter, entry_encyclopedia, et_al_term) {
+function createStyle(title, ID, name, summary, published, updated, book, article_journal, chapter, entry_encyclopedia, et_al_term, citation, ibid_term) {
     return  `<?xml version="1.0" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="note" version="1.0" demote-non-dropping-particle="never" default-locale="de">
   <info>
     <locale xml:lang="de">
         <terms>
         <term name="et-al">${et_al_term}</term>
-        <term name="and">/</term>
+        <term name="ibid">${ibid_term}</term>
         <term name="retrieved">zugegriffen am</term>
         <term name="accessed">Zugriff:</term>
         </terms>
@@ -229,10 +239,7 @@ function createStyle(title, ID, name, summary, published, updated, book, article
 
 
 <!--#############Hier steht die Zitation in den Fußnoten/-->
-  <citation>
-    <layout>
-    </layout>
-  </citation>
+  ${citation}
   
 <!--#############Hier beginnt die Bibliographie/-->
   <bibliography>
@@ -274,6 +281,66 @@ function createStyle(title, ID, name, summary, published, updated, book, article
 }
 
 
+function createCitation(book, article_journal, chapter, entry_encyclopedia, subsequent, querverweis) {
+    return `
+    <citation>
+    <layout>
+      <choose>
+        <if match="all" position="first">
+
+            <choose>
+              <if type="book" match="any">
+              ${book}
+              </if>
+            </choose>
+
+            <choose>
+              <if type="article-journal" match="any">
+              ${article_journal}
+              </if>
+            </choose>
+
+            <choose>
+              <if type="chapter" match="any">
+                ${chapter}
+                </if>
+            </choose>
+
+            <choose>
+                 <if type="encyclopedia-entry" match="any">
+                ${entry_encyclopedia}
+                  </if>
+            </choose>
+  
+        </if>
+      </choose>
+     
+      <choose>
+        <if match="any" position="ibid">
+          <text term="ibid"/>
+        </if>
+        
+        <else>
+          <choose>
+            <if match="any" position="subsequent">
+             ${subsequent}
+            </if>
+          </choose>
+          <choose>
+            <if variable="first-reference-note-number">
+            ${querverweis}
+            </if>
+        </choose>
+
+        
+        </else>
+      </choose>
+    
+    </layout>
+  </citation>`
+}
+
+
 function getCurrentXMLTimestamp() {
     const now = new Date();
 
@@ -297,35 +364,81 @@ function getCurrentYear() {
     return year
 }
 
+function fetchInfo(ids, shorten) {
+    let results = {}
+        
+    // Loop through each id and get the updated textContent or value
+    for (const id of ids) {
+        const element = document.getElementById(id);
+        console.log(id)
+        console.log(element)
+        const result = (element.tagName === "INPUT" || element.tagName === "TEXTAREA") ? element.value : element.textContent;
+        let key = id
+        if (shorten) {
+            key = key.slice(4, key.length)
+        }
+        results[key] = result
+        console.log(result);
+    }
+    return results
+}
+
+function fetchGeneralInfo() {
+    const ids = ["NameDesStyles", "AutorDesStyles", "BeschreibungdesStyles", "IDDesStyles", "cit-EbdForm", "bib-etalLabel"]
+    return fetchInfo(ids, false)
+}
+
+function fetchStylingInfo(prefix) {
+    const ids = [prefix + "book", prefix + "article", prefix + "chapter", prefix + "encyclopedia-entry", prefix + "delimiter", prefix + "etal"]
+    return { ...fetchInfo(ids, true), shortenNames: document.getElementById(prefix + 'AutorGekuerzt').checked }
+}
+
 
 function main() {
     document.getElementById('btn').addEventListener('click', function () {
-        const ids = ["book", "article", "chapter", "encyclopedia-entry", "delimiter", "NameDesStyles", "AutorDesStyles", "BeschreibungdesStyles", "etal", "IDDesStyles", "etalLabel"]
-        const results = []
-        
-        // Loop through each id and get the updated textContent or value
-        for (const id of ids) {
-            const element = document.getElementById(id);
-            const result = (element.tagName === "INPUT" || element.tagName === "TEXTAREA") ? element.value : element.textContent;
-            results.push(result);
-            console.log(result);
-        }
+        const generalInfo = fetchGeneralInfo()
+        const bibInfo = fetchStylingInfo("bib-")
+        const citInfo = fetchStylingInfo("cit-")
         
         // Using the results array to create the text
-        const styleTitle = results[5]
-        shortenNames = document.getElementById('AutorGekuerzt').checked
-        nameDelimiter = results[4];
-        et_al_min = results[8];
-        let text = createStyle(styleTitle, results[9], results[6], results[7], getCurrentYear(), getCurrentXMLTimestamp(), createCSL(results[0]), createCSL(results[1]), createCSL(results[2]), createCSL(results[3]), results[10]);
+        const styleTitle = generalInfo["NameDesStyles"]
+
         
 
-        // make the generated xml look nice
+        //createCitation(book, article_journal, chapter, entry_encyclopedia, subsequent)
+        let bookCSL = createCSL(citInfo["book"])
+        let articleCSL = createCSL(citInfo["article"])
+        let chapterCSL = createCSL(citInfo["chapter"])
+        let entry_encyclopediaCSL = createCSL(citInfo["entry_encyclopedia"])
+        const citation = createCitation(bookCSL, articleCSL, chapterCSL, entry_encyclopediaCSL, createCSL(document.getElementById("cit-Kurzzitat").value), createCSL(document.getElementById("cit-Querverweis").value))
+
+        console.log(citation)
+
+        shortenNames = citInfo.shortenNames
+        nameDelimiter = citInfo["delimiter"];
+        et_al_min = citInfo["etal"];
+
+        //createStyle(title, ID, name, summary, published, updated, book, article_journal, chapter, entry_encyclopedia, et_al_term, citation, ibid_term)
+
+        shortenNames = bibInfo.shortenNames
+        nameDelimiter = bibInfo["delimiter"];
+        et_al_min = bibInfo["etal"];
+
+
+        bookCSL = createCSL(bibInfo["book"])
+        articleCSL = createCSL(bibInfo["article"])
+        chapterCSL = createCSL(bibInfo["chapter"])
+        entry_encyclopediaCSL = createCSL(bibInfo["entry_encyclopedia"])
+        let text = createStyle(styleTitle, generalInfo["IDDesStyles"], generalInfo["NameDesStyles"], generalInfo["BeschreibungdesStyles"], getCurrentYear(), getCurrentXMLTimestamp(), bookCSL, articleCSL, chapterCSL, entry_encyclopediaCSL, generalInfo["etalLabel"], citation, generalInfo["cit-EbdForm"])
+        
+
+        // make the generated xml look nice (needed, zotero won't accept it otherwise)
         var convert = require('xml-js');
         const convertOptions = {compact: false, spaces: 4}
         var jsonRepresentation = convert.xml2json(text, convertOptions);
         text = convert.json2xml(jsonRepresentation, convertOptions);
 
-
+        //  download the style
         const filename = styleTitle + ".csl";
 
         const element = document.createElement('a');
