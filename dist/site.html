@@ -6,10 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CSL Style Editor</title>
   <link href="stylesheet.css" rel="stylesheet" />
+  <script src="entry.js"></script>
 </head>
 
 <body>
   <script src="main.js"></script>
+  
   <h1>CSL Style Editor</h1>
   <p>Bitte verändern Sie die bibliographischen Angaben in den Feldern so, wie Sie es wünschen. Behalten Sie dabei die
     Titel der Variablen bei, die in spitzen Klammern stehen.</p>
@@ -22,196 +24,91 @@
   <p>(i) = kursiv – (b) = fett – (sc) = Kapitälchen</p>
   <p>In geschweiften Klammern stehen diejenigen Teile, die nur angezeigt werden, sofern es sie auch gibt – zum Beispiel
     Reihentitel und Angaben zur Auflage.</p>
-  <p><em>Außer bei den Angaben zu Namen von Autoren und Herausgebern achten Sie bitte genau darauf, wo Leerzeichen stehen
-    sollen – und wo nicht. Die Leerzeichen werden exakt mit übernommen!</em></p>
+  <p><em>Außer bei den Angaben zu Namen von Autoren und Herausgebern achten Sie bitte genau darauf, wo Leerzeichen
+      stehen sollen – und wo nicht. Die Leerzeichen werden exakt mit übernommen!</em></p>
 
-  <p>
-    ____________________________________________________________________________________________________________________________________________________
-  </p>
-  <H2>I. Für die Bibliographie</h2>
-    <p>
-      ____________________________________________________________________________________________________________________________________________________
-    </p>
-  <h3>1. Monographie</h3>
+  <h2>I. Für die Bibliographie</h2>
 
-  <div>
-    <label for="book"> </label>
-    <textarea rows="3" cols="100" name="book"
-      id="bib-book">[Autor<Vorname><Name(sc)>], <Titel(i)>{ (<Reihentitel>}{, <Bd.-Nr.>)}, <Ort>: <Verlagsname>, {<Auflage>, }<Jahr> </textarea>
-  </div>
-  <p>
-    ____________________________________________________________________________________________________________________________________________________
-  </p>
-  <h3>2. Aufsatz in einer Zeitschrift</h3>
-  <div>
-    <label for="article"> </label>
-    <textarea rows="3" cols="100" name="article"
-      id="bib-article">[Autor<Vorname><Name(sc)>], <Titel>, in: <Zeitschrift(i)> <Bd.-Nr.> (<Jahr>), S. <Seitenzahlen></textarea>
-  </div>
-  <p>
-    ____________________________________________________________________________________________________________________________________________________
-  </p>
-  <h3>3. Aufsatz in einem Sammelband</h3>
-  <div>
-    <label for="chapter"> </label>
-    <textarea rows="3" cols="100" name="chapter"
-      id="bib-chapter">[Autor<Vorname><Name(sc)>], <Titel>, in: [Herausgeber<Vorname><Name>] (Hg.), <Bandtitel(i)>{ (<Reihentitel>}{, <Bd.-Nr.>)}, <Ort>: <Verlagsname>, {<Auflage>, }<Jahr>, S. <Seitenzahlen></textarea>
-  </div>
-  <p>
-    ____________________________________________________________________________________________________________________________________________________
-  </p>
-  <h3>4. Lexikonartikel</h3>
-  <div>
-    <label for=" article"> </label>
-    <textarea rows="3" cols="100" name="encyclopedia-entry"
-      id="bib-encyclopedia-entry">[Autor<Vorname><Name(sc)>], Art. <Titel>, in: <Lexikon(i)> <Bd.-Nr.> (<Jahr>), Sp. <Seitenzahlen></textarea>
-  </div>
-  <p>
-    ____________________________________________________________________________________________________________________________________________________
-  </p>
+  <entry-field label="1. Monographie" id="bib-book" name="book"
+    value="[Autor<Vorname><Name(sc)>], <Titel(i)>{ (<Reihentitel>}{, <Bd.-Nr.>)}, <Ort>: <Verlagsname>, {<Auflage>, }<Jahr>"></entry-field>
+
+  <entry-field label="2. Aufsatz in einer Zeitschrift" id="bib-article" name="article"
+    value="[Autor<Vorname><Name(sc)>], <Titel>, in: <Zeitschrift(i)> <Bd.-Nr.> (<Jahr>), S. <Seitenzahlen>"></entry-field>
+
+  <entry-field label="3. Aufsatz in einem Sammelband" id="bib-chapter" name="chapter"
+    value="[Autor<Vorname><Name(sc)>], <Titel>, in: [Herausgeber<Vorname><Name>] (Hg.), <Bandtitel(i)>{ (<Reihentitel>}{, <Bd.-Nr.>)}, <Ort>: <Verlagsname>, {<Auflage>, }<Jahr>, S. <Seitenzahlen>"></entry-field>
+
+  <entry-field label="4. Lexikonartikel" id="bib-encyclopedia-entry" name="encyclopedia-entry-field"
+    value="[Autor<Vorname><Name(sc)>], Art. <Titel>, in: <Lexikon(i)> <Bd.-Nr.> (<Jahr>), Sp. <Seitenzahlen>"></entry-field>
+  
+  <entry-field label="4. Lexikonartikel" id="bib-encyclopedia-entry" name="encyclopedia-entry-field"
+        value="[Autor<Vorname><Name(sc)>], Art. <Titel>, in: <Lexikon(i)> <Bd.-Nr.> (<Jahr>), Sp. <Seitenzahlen>"></entry-field>
+
   <h3>5. Trennzeichen bei mehreren Autoren</h3>
-  <p><em>Achtung:</em> Gegebenenfalls Leerzeichen mit eingeben!</p>
-  <div>
-    <label for="Trennzeichen"> </label>
-    <input type="text" name="delimiter" id="bib-delimiter" size="5" value=", ">
-  </div>
-  <p>
-    ____________________________________________________________________________________________________________________________________________________
-  </p>
+  <input type="text" name="delimiter" id="bib-delimiter" size="5" value=", ">
+
   <h3>6. et al. ab wieviel Autoren</h3>
-  <div>
-    <label for="et al.-number"> </label>
-    <input type="text" name="et al.-number" id="bib-etal" size="5" value="4">
-  </div>
-  <p>
-    ____________________________________________________________________________________________________________________________________________________
-  </p>
+  <input type="text" name="et al.-number" id="bib-etal" size="5" value="4">
+
   <h3>7. et al.-Label</h3>
-  <div>
-    <label for="et al.-label"> </label>
-    <input type="text" name="et al.-label" id="bib-etalLabel" size="5" value="et al.">
-  </div>
-  <p>
-    ____________________________________________________________________________________________________________________________________________________
-  </p>
+  <input type="text" name="et al.-label" id="bib-etalLabel" size="5" value="et al.">
+
   <h3>8. Vornamen abkürzen</h3>
-  <p>Bitte Häkchen setzen, falls die Vornamen von Autoren und Herausgebern abgekürzt werden sollen!</p>
-  <div>
-    <label for="Abkuerzung"> </label>
-    <input type="checkbox" name="Abkuerzung" id="bib-AutorGekuerzt" value="false" unchecked>
-  </div>
-  <p>
-    ____________________________________________________________________________________________________________________________________________________
-  </p>
+  <input type="checkbox" name="Abkuerzung" id="bib-AutorGekuerzt" value="false" unchecked>
 
-  <H2>II. Für die Fußnoten</h2>
-    <p>
-      ____________________________________________________________________________________________________________________________________________________
-    </p>
-    <button id="Uebernehmen-btn">aus Bibliographie übernehmen</button>
+  <h2>II. Für die Fußnoten</h2>
+  <button id="Uebernehmen-btn">aus Bibliographie übernehmen</button>
 
-    <h3>1. Monographie</h3>
+ 
+  <entry-field label="1. Monographie" id="cit-book" name="book"
+    value="[Autor<Vorname><Name(sc)>], <Titel(i)>{ (<Reihentitel>}{, <Bd.-Nr.>)}, <Ort>: <Verlagsname>, {<Auflage>, }<Jahr>"></entry-field>
 
-  <div>
-    <label for="book"> </label>
-    <textarea rows="3" cols="100" name="book"
-      id="cit-book">[Autor<Vorname><Name(sc)>], <Titel(i)>{ (<Reihentitel>}{, <Bd.-Nr.>)}, <Ort>: <Verlagsname>, {<Auflage>, }<Jahr> </textarea>
-  </div>
-  <p>
-    ____________________________________________________________________________________________________________________________________________________
-  </p>
-  <h3>2. Aufsatz in einer Zeitschrift</h3>
-  <div>
-    <label for="article"> </label>
-    <textarea rows="3" cols="100" name="article"
-      id="cit-article">[Autor<Vorname><Name(sc)>], <Titel>, in: <Zeitschrift(i)> <Bd.-Nr.> (<Jahr>), S. <Seitenzahlen></textarea>
-  </div>
-  <p>
-    ____________________________________________________________________________________________________________________________________________________
-  </p>
-  <h3>3. Aufsatz in einem Sammelband</h3>
-  <div>
-    <label for="chapter"> </label>
-    <textarea rows="3" cols="100" name="chapter"
-      id="cit-chapter">[Autor<Vorname><Name(sc)>], <Titel>, in: [Herausgeber<Vorname><Name>] (Hg.), <Bandtitel(i)>{ (<Reihentitel>}{, <Bd.-Nr.>)}, <Ort>: <Verlagsname>, {<Auflage>, }<Jahr>, S. <Seitenzahlen></textarea>
-  </div>
-  <p>
-    ____________________________________________________________________________________________________________________________________________________
-  </p>
-  <h3>4. Lexikonartikel</h3>
-  <div>
-    <label for=" article"> </label>
-    <textarea rows="3" cols="100" name="encyclopedia-entry"
-      id="cit-encyclopedia-entry">[Autor<Vorname><Name(sc)>], <Titel>, in: <Lexikon(i)> <Bd.-Nr.> (<Jahr>), Sp. <Seitenzahlen></textarea>
-  </div>
-  <p>
-    ____________________________________________________________________________________________________________________________________________________
-  </p>
+
+  <entry-field label="2. Aufsatz in einer Zeitschrift" id="cit-article" name="article"
+    value="[Autor<Vorname><Name(sc)>], <Titel>, in: <Zeitschrift(i)> <Bd.-Nr.> (<Jahr>), S. <Seitenzahlen>"></entry-field>
+
+
+  <entry-field label="3. Aufsatz in einem Sammelband" id="cit-chapter" name="chapter"
+    value="[Autor<Vorname><Name(sc)>], <Titel>, in: [Herausgeber<Vorname><Name>] (Hg.), <Bandtitel(i)>{ (<Reihentitel>}{, <Bd.-Nr.>)}, <Ort>: <Verlagsname>, {<Auflage>, }<Jahr>, S. <Seitenzahlen>"></entry-field>
+
+
+  <entry-field label="4. Lexikonartikel" id="cit-encyclopedia-entry" name="encyclopedia-entry-field"
+    value="[Autor<Vorname><Name(sc)>], <Titel>, in: <Lexikon(i)> <Bd.-Nr.> (<Jahr>), Sp. <Seitenzahlen>"></entry-field>
+
+  <entry-field label="4. Lexikonartikel" id="cit-encyclopedia-entry" name="encyclopedia-entry-field"
+    value="[Autor<Vorname><Name(sc)>], <Titel>, in: <Lexikon(i)> <Bd.-Nr.> (<Jahr>), Sp. <Seitenzahlen>"></entry-field>
+
   <h3>5. Trennzeichen bei mehreren Autoren</h3>
-  <p><em>Achtung:</em> Gegebenenfalls Leerzeichen mit eingeben!</p>
-  <div>
-    <label for="Trennzeichen"> </label>
-    <input type="text" name="delimiter" id="cit-delimiter" size="5" value=", ">
-  </div>
-  <p>
-    ____________________________________________________________________________________________________________________________________________________
-  </p>
+  <input type="text" name="delimiter" id="cit-delimiter" size="5" value=", ">
+
   <h3>6. et al. ab wieviel Autoren</h3>
-  <div>
-    <label for="et al.-number"> </label>
-    <input type="text" name="et al.-number" id="cit-etal" size="5" value="4">
-  </div>
-  <p>
-    ____________________________________________________________________________________________________________________________________________________
-  </p>
+  <input type="text" name="et al.-number" id="cit-etal" size="5" value="4">
 
   <h3>7. Vornamen abkürzen</h3>
-  <p>Bitte Häkchen setzen, falls die Vornamen von Autoren und Herausgebern abgekürzt werden sollen!</p>
-  <div>
-    <label for="Abkuerzung"> </label>
-    <input type="checkbox" name="Abkuerzung" id="cit-AutorGekuerzt" value="false" unchecked>
-  </div>
-  <p>
-    ____________________________________________________________________________________________________________________________________________________
-  </p>
+  <input type="checkbox" name="Abkuerzung" id="cit-AutorGekuerzt" value="false" unchecked>
 
   <h3>8. Kurzzitate</h3>
-
-  <label for="Kurzzitat"> </label>
   <p>Form des Kurzzitats</p>
   <input type="text" name="Kurzzitat" id="cit-Kurzzitat" size="100" value="[Autor<Name(sc)>], <Kurztitel>">
   <p>Bitte Häkchen setzen, falls die Vornamen von Autoren und Herausgebern abgekürzt werden sollen!</p>
-  <div>
-    <label for="Abkuerzung"> </label>
-    <input type="checkbox" name="cit-KurzzitatAbkuerzung" id="cit-KurzzitatAbkuerzung" value="false" unchecked>
-  </div>
+  <input type="checkbox" name="cit-KurzzitatAbkuerzung" id="cit-KurzzitatAbkuerzung" value="false" unchecked>
 
-    <p>Form des Querverweises (bitte einfach leer lassen, wenn keine Querverweise vorgesehen sind)</p>
+  <p>Form des Querverweises (bitte einfach leer lassen, wenn keine Querverweise vorgesehen sind)</p>
   <input type="text" name="Querverweis" id="cit-Querverweis" size="100" value=" (wie Anm. <FN>)">
-    <p>Ebd.-Form</p>
-    <input type="text" name="Ebd.-Form" id="cit-EbdForm" size="100" value="ibid.">  
-  <p>
-    ____________________________________________________________________________________________________________________________________________________
-  </p>
+  <p>Ebd.-Form</p>
+  <input type="text" name="Ebd.-Form" id="cit-EbdForm" size="100" value="ibid.">
+
   <h2>III. Angaben zum Style</h2>
-  <div>
-    <label for="AutorDesStyles"> </label>
-    <p>Autor:in:</p>
-    <input type="text" name="AutorDesStyles" id="AutorDesStyles" size="100" value="Autor:in">
-    <label for="IDDesStyles"> </label>
-    <p>ID des Stils:</p>
-    <input type="text" name="IDDesStyles" id="IDDesStyles" size="100" value="DiesIstEineID">
-    <label for="NameDesStyles"> </label>
-    <p>Titel:</p>
-    <input type="text" name="NameDesStyles" id="NameDesStyles" size="100" value="Basic Style 1">
-    <p>Beschreibung:</p>
-    <label for="BeschreibungDesStyles"> </label>
-    <textarea rows="3" cols="100" name="BeschreibungDesStyles"
-      id="BeschreibungdesStyles">Beschreibung des Stils</textarea>
-  </div>
-  <p>
-    ____________________________________________________________________________________________________________________________________________________
-  </p>
+  <p>Autor:in:</p>
+  <input type="text" name="AutorDesStyles" id="AutorDesStyles" size="100" value="Autor:in">
+  <p>ID des Stils:</p>
+  <input type="text" name="IDDesStyles" id="IDDesStyles" size="100" value="DiesIstEineID">
+  <p>Titel:</p>
+  <input type="text" name="NameDesStyles" id="NameDesStyles" size="100" value="Basic Style 1">
+  <p>Beschreibung:</p>
+  <textarea rows="3" cols="100" name="BeschreibungDesStyles"
+    id="BeschreibungdesStyles">Beschreibung des Stils</textarea>
+
   <button id="btn">Stil basteln</button>
 </body>
 

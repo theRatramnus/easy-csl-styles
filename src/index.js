@@ -322,6 +322,11 @@ function createStyle(title, ID, name, summary, published, updated, book, article
             ${entry_encyclopedia}
           </if>
         </choose>
+
+
+
+
+
     </layout>
   </bibliography>
 </style>
@@ -418,9 +423,9 @@ function fetchInfo(ids, shorten) {
     // Loop through each id and get the updated textContent or value
     for (const id of ids) {
         const element = document.getElementById(id);
-        //console.log(id)
-        //console.log(element)
-        const result = (element.tagName === "INPUT" || element.tagName === "TEXTAREA") ? element.value : element.textContent;
+        console.log(id)
+        console.log(element)
+        const result = element.getAttribute("value")
         let key = id
         if (shorten) {
             key = key.slice(4, key.length)
@@ -513,12 +518,11 @@ function main() {
 
         
         const ids = function (prefix) { return [prefix + "book", prefix + "article", prefix + "chapter", prefix + "encyclopedia-entry", prefix + "delimiter", prefix + "etal"] }
-
+        console.log(bibInfo)
         for (const id of ids("cit-")) {
             const element = document.getElementById(id);
-            if ((element.tagName === "INPUT" || element.tagName === "TEXTAREA")) {
-                element.value = bibInfo[id.slice(4, id.length)]
-            }
+            console.log(id, element, bibInfo[id.slice(4, id.length)])
+            element.setAttribute("value", bibInfo[id.slice(4, id.length)])
         }
         
 
