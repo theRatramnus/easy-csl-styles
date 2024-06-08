@@ -4,6 +4,7 @@ const { group } = require('console');
 const { type } = require('os');
 const { citables } = require('./citables');
 const { createCSL, setCreatorParameters, setShortenNames } = require('./csl-creator');
+const { CSLEngine } = require('./csl-engine');
 
 
 // Example usage assuming 'placeholders' is properly defined
@@ -209,7 +210,9 @@ function fetchStylingInfo(prefix) {
 }
 
 
-function main() {
+async function main() {
+
+    const previewEngine = await CSLEngine.build("de-DE", citables)
 
 
     document.getElementById('btn').addEventListener('click', function () {
@@ -263,6 +266,9 @@ function main() {
         var jsonRepresentation = convert.xml2json(text, convertOptions);
         text = convert.json2xml(jsonRepresentation, convertOptions);
 
+        // update the preview engine
+        previewEngine.updateStyle(text);
+
         //  download the style
         const filename = styleTitle + ".csl";
 
@@ -296,6 +302,20 @@ function main() {
 
 
     });
+    document.getElementById('updateCitables-btn').addEventListener('click', function(event) {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    console.log("citation data loaded", e.target.result);
+                    previewEngine.updateItems(JSON.parse(e.target.result));
+                };
+                reader.readAsText(file);
+            } else {
+                console.log('No file selected');
+            }
+        });
 }
 
 
