@@ -2,275 +2,26 @@
 
 const { group } = require('console');
 const { type } = require('os');
+const { citables } = require('./citables');
+const { createCSL, setCreatorParameters, setShortenNames } = require('./csl-creator');
 
-const cslDictionary = {
-    "Jahr": {
-        type: "date",
-        content: "date-parts=\"year\" form=\"text\" variable=\"issued\""
-    },
-    "Autor": "author",
-    "Herausgeber": "editor",
-    "Vorname": "given",
-    "Name": "family",
-    "Titel": "title",
-    "Bandtitel": "container-title",
-    "Zeitschrift": "container-title",
-    "Lexikon": "container-title",
-    "Reihentitel": "collection-title",
-    "Bd.-Nr.": "volume",
-    "Ort": "publisher-place",
-    "Verlagsname": "publisher",
-    "Auflage": "edition",
-    "Seitenzahlen": "page",
-    "Editor": "contributor",
-    "Kurztitel": {
-        type: "variable",
-        content: `variable="title" form="short"`
-    },
-    "FN": "first-reference-note-number"
-};
 
-let nameDelimiter = " / "
-let et_al_min = 3
-let shortenNames = false
-
-function parsePlaceholdersAndText(text) {
-    // Regular expression to capture both placeholders and regular text
-    const regex = /([{][^{}]*[}]|[[][^[\]]*[\]]|[<][^<>]*[>])|([^{}<>\[\]]+)/g;
-    const matches = [];
-    let match;
-    //console.log(text)
-    // Iterate over each match from the regular expression
-    while ((match = regex.exec(text)) !== null) {
-        console.log(match[0])
-        if (match[1]) { // This is a placeholder match
-            let type;
-            let content = match[1].slice(1, -1); // Remove the surrounding brackets
-            //console.log(match[1])
-            switch (match[1][0]) { // Check the first character to determine the type
-                case '{':
-                    type = 'facultative';
-                    console.log("HERE")
-                    console.log(match[1])
-                    // Recursively parse nested placeholders if they exist
-                    matches.push({ content: parseNestedPlaceholders(content), styling: null, type });
-                    break;
-                case '[':
-                    type = 'group';
-                    // Recursively parse nested placeholders if they exist
-                    matches.push({ content: parseNestedPlaceholders(content), styling: null, type });
-                    break;
-                case '<':
-                    type = 'variable';
-                    matches.push(createPlaceholder(evaluateStyling(content), type))
-                    break;
-                default:
-                    type = 'unknown';
-                    matches.push({ content, type: type})
-            }
-            
-            
-        }
-        else if (match[2]) { // This is regular text
-            matches.push({ content: match[2], type: 'text', styling: null });
-            console.log(match[2])
-            if (match[2].includes("<")) {
-                console.warn("Found < in ", match[2])
-            }
-        }
-    }
-    return matches;
-}
-
-function evaluateStyling(input) {
-
-    const regex = /\(..?\)/g;
-    const stylings = input.match(regex);
-    const content = input.split("(")[0]
-    let result = ""
-    if (stylings) {
-        for (const found of stylings) {
-            switch (found) {
-                case '(sc)':
-                    result += "font-variant=\"small-caps\" "
-                    break
-                
-                case '(i)':
-                    result += "font-style=\"italic\" "
-                    break
-
-                case '(b)':
-                    result += "font-weight=\"bold\" "
-                    break
-            }
-        }
-    }
-    return { styling: result, content: content }
-}
-
-function createPlaceholder(content, styling, type) {
-    return {content: content, styling, type}
-}
-function createPlaceholder(object, type) {
-    return {...object, type};
-}
-
-function parseNestedPlaceholders(content) {
-    // Regular expression to capture nested placeholders
-    const nestedRegex = /([{][^{}]*[}]|[[][^[\]]*[\]]|[<][^<>]*[>])/g;
-    // Array to store the results
-    const results = [];
-    // Variable to store the match object
-    let nestedMatch;
-    // Variable to store the last index of a match
-    let lastIndex = 0;
-    // Loop through each match
-    while ((nestedMatch = nestedRegex.exec(content)) !== null) {
-        // Check if there is text between the last match and the current match
-        if (nestedMatch.index > lastIndex) {
-            // Add the text between the placeholders as type 'text'
-            results.push({ content: content.substring(lastIndex, nestedMatch.index), type: 'text' });
-            console.log("text oben" + content.substring(lastIndex, nestedMatch.index))
-        }
-        // Handle the nested placeholder
-        // Check if the current match is a variable placeholder
-        if (nestedMatch[0].charAt(0) === '<') {
-            // Add the variable placeholder to the results array
-            results.push(createPlaceholder(evaluateStyling(nestedMatch[0].slice(1, -1)), 'variable'));
-            // Update the last index to the end of the current match
-            lastIndex = nestedMatch.index + nestedMatch[0].length;
-        }
-        // Check if the current match is a group placeholder
-        else if(nestedMatch[0].charAt(0) === '[') {
-            // Recursively parse any nested placeholders in the group placeholder
-            results.push({ content: parseNestedPlaceholders(nestedMatch[0].slice(1, -1)), styling: null, type: 'group' });
-        }
-        // If the current match is neither a variable nor a group placeholder, it is text
-        else {
-            // Add the text between the last match and the current match as type 'text'
-            results.push({ content: content.substring(lastIndex, nestedMatch.index), type: 'text' });
-            console.log("text unten" + content.substring(lastIndex, nestedMatch.index))
-        }
-    }
-    // Check if there is any remaining text after the last match
-    if (lastIndex < content.length) {
-        // Add the remaining text as type 'text'
-        if (!content.substring(lastIndex).includes("<")) {
-            results.push({ content: content.substring(lastIndex), type: 'text', styling: null });
-        }
-    }
-    // Return the results array if it is not empty, otherwise return the original content
-    return results.length ? results : content;
-}
-// Example usage
-/*const inputString = "[Autor<Vorname(i)(b)(sc)><Name>], <Titel(sc)>{ (<Reihentitel(b)>, }{<Bd.-Nr.>)}, <Ort(i)>: <Verlagsname>, {<Auflage>, }<Jahr>";
-const placeholders = parsePlaceholdersAndText(inputString);
-console.log(JSON.stringify({ placeholders }));*/
-function createTextCSLBlock(placeholder) {
-    return `<text value="${placeholder.content}"/>`;
-}
-// Create CSL block for a variable placeholder
-function createVariableCSLBlock(placeholder) {
-    let variableInfo = cslDictionary[placeholder.content];
-    //console.log(placeholder.content)
-    //console.log(variableInfo)
-    if (typeof variableInfo === "string") {
-        return `<text variable="${variableInfo}" ${placeholder.styling ? placeholder.styling : "" } />`;
-    }
-    else if (variableInfo.type === "date") {
-        return `<date ${variableInfo.content} />`;
-    }
-    else if (variableInfo.type === "variable") { 
-        return `<text ${variableInfo.content} />`
-    }
-}
-// Create CSL blocks for an array of placeholders
-function createCSLBlocks(placeholders) {
-    let result = "";
-    for (let placeholder of placeholders) {
-        result += createCSLBlock(placeholder);
-    }
-    return result;
-}
-// Create CSL block based on placeholder type
-function createCSLBlock(placeholder) {
-    let result = "";
-    switch (placeholder.type) {
-        case 'text':
-            result += createTextCSLBlock(placeholder)
-            break;
-        case 'variable':
-            result += createVariableCSLBlock(placeholder)
-            break;
-        case 'group':
-            result += createCSLGroupBlock(placeholder)
-            break;
-        case 'facultative':
-            const variable = determineIfVariable(placeholder.content)
-            result += `<choose><if variable="${cslDictionary[variable]}" match="any">${placeholder.content.reduce((accumulator, currentValue) => accumulator + createCSLBlock(currentValue),
-  "")}</if></choose>`;
-            break;
-    }
-    result += "\n"
-    return result;
-}
-function determineIfVariable(content) {
-    console.log(content)
-    const variable = content.find((el) => el.type === "variable")
-    console.log(variable)
-    if (variable) {
-        return variable.content
-    } else {
-        const name = content.find((el) => el.type === "group")
-        console.log(name)
-        return name.content[0].content
-    }
-}
-
-// Create CSL group block for group placeholders
-function createCSLGroupBlock(placeholder) {
-    const nachvorvorname = placeholder.content[1].content === "Name"
-    let result = `<names variable="${cslDictionary[placeholder.content[0].content]}">\n`;
-    result += `<name delimiter="${nameDelimiter}" et-al-min="${et_al_min}" et-al-use-first="${1}" ${nachvorvorname ? "name-as-sort-order=\"first\"" : ""} ${shortenNames ? `initialize-with=". "` : ""} ${placeholder.content.length > 2 ? "" : `form="short"`} >` +"\n"
-    for (const part of placeholder.content.slice(1)) {
-        result += `<name-part name="${cslDictionary[part.content]}" ${part.styling ? part.styling : "" } />` + "\n"
-    }
-    result += "</name>\n</names>\n";
-   // console.log(result)
-    return result;
-}
-// Create CSL representation for all placeholders
-function createCSL(text) {
-    const placeholders = parsePlaceholdersAndText(text)
-    console.log(JSON.stringify(placeholders))
-    let result = "";
-    for (let placeholder of placeholders) {
-        if (placeholder.type === "group") {
-            result += createCSLGroupBlock(placeholder);
-        }
-        else {
-            result += createCSLBlock(placeholder);
-        }
-    }
-    return result;
-}
 // Example usage assuming 'placeholders' is properly defined
 //console.log(createCSL(placeholders));
+/*<locale xml:lang="de">
+            <terms>
+            <term name="et-al">${et_al_term}</term>
+            <term name="ibid">${ibid_term}</term>
+            <term name="retrieved">zugegriffen am</term>
+            <term name="accessed">Zugriff:</term>
+            </terms>
+    </locale>*/
 
 
-
-function createStyle(title, ID, name, summary, published, updated, book, article_journal, chapter, entry_encyclopedia, et_al_term, citation, ibid_term) {
-    return  `<?xml version="1.0" encoding="utf-8"?>
+function createStyle(title, ID, name, summary, published, updated, book, article_journal, chapter, entry_encyclopedia, article_newspaper, et_al_term, citation, ibid_term) {
+    return `<?xml version="1.0" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="note" version="1.0" demote-non-dropping-particle="never" default-locale="de">
   <info>
-    <locale xml:lang="de">
-        <terms>
-        <term name="et-al">${et_al_term}</term>
-        <term name="ibid">${ibid_term}</term>
-        <term name="retrieved">zugegriffen am</term>
-        <term name="accessed">Zugriff:</term>
-        </terms>
-    </locale>
     <title>${title}</title>
     <id>${ID}</id>
     <author>
@@ -280,9 +31,8 @@ function createStyle(title, ID, name, summary, published, updated, book, article
       <name>Ludwig Patzold</name>
     </contributor>
     <summary>${summary}</summary>
-    <published>${published}</published>
     <updated>${updated}</updated>
-    <category/>
+    <category citation-format="note"/>
   </info>
 
 
@@ -324,17 +74,22 @@ function createStyle(title, ID, name, summary, published, updated, book, article
         </choose>
 
 
-
+<!--###############Hier beginnt der Zeitungsartikel/-->
+        <choose>
+          <if type="article-newspaper" match="any">
+            ${article_newspaper}
+          </if>
+        </choose>
 
 
     </layout>
   </bibliography>
 </style>
-`
+`;
 }
 
 
-function createCitation(book, article_journal, chapter, entry_encyclopedia, subsequent, querverweis) {
+function createCitation(book, article_journal, chapter, entry_encyclopedia, article_newspaper, subsequent, querverweis) {
     return `
     <citation>
     <layout>
@@ -360,9 +115,15 @@ function createCitation(book, article_journal, chapter, entry_encyclopedia, subs
             </choose>
 
             <choose>
-                 <if type="encyclopedia-entry" match="any">
+              <if type="entry-encyclopedia" match="any">
                 ${entry_encyclopedia}
-                  </if>
+              </if>
+            </choose>
+
+            <choose>
+              <if type="article-newspaper" match="any">
+                ${article_newspaper}
+              </if>
             </choose>
   
         </if>
@@ -431,7 +192,8 @@ function fetchInfo(ids, shorten) {
             key = key.slice(4, key.length)
         }
         results[key] = result
-        //console.log(result);
+        console.log("fetched ", key, result)
+        console.log(result);
     }
     return results
 }
@@ -442,12 +204,14 @@ function fetchGeneralInfo() {
 }
 
 function fetchStylingInfo(prefix) {
-    const ids = [prefix + "book", prefix + "article", prefix + "chapter", prefix + "encyclopedia-entry", prefix + "delimiter", prefix + "etal"]
+    const ids = [prefix + "book", prefix + "article", prefix + "chapter", prefix + "encyclopedia-entry", prefix + "article-newspaper" , prefix + "delimiter", prefix + "etal"]
     return { ...fetchInfo(ids, true), shortenNames: document.getElementById(prefix + 'AutorGekuerzt').checked }
 }
 
 
 function main() {
+
+
     document.getElementById('btn').addEventListener('click', function () {
         const generalInfo = fetchGeneralInfo()
         const bibInfo = fetchStylingInfo("bib-")
@@ -459,38 +223,38 @@ function main() {
         
 
         //createCitation(book, article_journal, chapter, entry_encyclopedia, subsequent)
-        shortenNames = citInfo.shortenNames
-        nameDelimiter = citInfo["delimiter"];
-        et_al_min = citInfo["etal"];
+        function setCSLParameters(info) {
+            setCreatorParameters(info["delimiter"], info["etal"], info.shortenNames)            
+        }
+        setCSLParameters(citInfo);
 
-        let bookCSL = createCSL(citInfo["book"])
-        let articleCSL = createCSL(citInfo["article"])
-        let chapterCSL = createCSL(citInfo["chapter"])
-        let entry_encyclopediaCSL = createCSL(citInfo["entry_encyclopedia"])
+        const createStyleCSL = (obj) => {
+            return {
+                book: createCSL(obj["book"]),
+                article: createCSL(obj["article"]),
+                chapter: createCSL(obj["chapter"]),
+                entry_encyclopedia: createCSL(obj["entry-encyclopedia"]),
+                article_newspaper: createCSL(obj["article-newspaper"])
+            }
+        }
+        const citCSL = createStyleCSL(citInfo)
         
-        shortenNames = document.getElementById("cit-KurzzitatAbkuerzung").checked
+        setShortenNames(document.getElementById("cit-KurzzitatAbkuerzung").checked);
         const kurzzitat = createCSL(document.getElementById("cit-Kurzzitat").value)
         
 
 
-        const citation = createCitation(bookCSL, articleCSL, chapterCSL, entry_encyclopediaCSL, kurzzitat, createCSL(document.getElementById("cit-Querverweis").value))
+        const citation = createCitation(citCSL.book, citCSL.article, citCSL.chapter, citCSL.entry_encyclopedia, citCSL.article_newspaper, kurzzitat, createCSL(document.getElementById("cit-Querverweis").value))
 
         //console.log(citation)
 
 
-        //createStyle(title, ID, name, summary, published, updated, book, article_journal, chapter, entry_encyclopedia, et_al_term, citation, ibid_term)
 
-        shortenNames = bibInfo.shortenNames
-        nameDelimiter = bibInfo["delimiter"];
-        et_al_min = bibInfo["etal"];
+        setCSLParameters(bibInfo)
 
+        const bibCSL = createStyleCSL(bibInfo)
 
-        bookCSL = createCSL(bibInfo["book"])
-        articleCSL = createCSL(bibInfo["article"])
-        chapterCSL = createCSL(bibInfo["chapter"])
-        entry_encyclopediaCSL = createCSL(bibInfo["entry_encyclopedia"])
-
-        let text = createStyle(styleTitle, generalInfo["IDDesStyles"], generalInfo["NameDesStyles"], generalInfo["BeschreibungdesStyles"], getCurrentYear(), getCurrentXMLTimestamp(), bookCSL, articleCSL, chapterCSL, entry_encyclopediaCSL, generalInfo["etalLabel"], citation, generalInfo["cit-EbdForm"])
+        let text = createStyle(styleTitle, generalInfo["IDDesStyles"], generalInfo["NameDesStyles"], generalInfo["BeschreibungdesStyles"], getCurrentYear(), getCurrentXMLTimestamp(), bibCSL.book, bibCSL.article, bibCSL.chapter, bibCSL.entry_encyclopedia, bibCSL.article_newspaper, generalInfo["etalLabel"], citation, generalInfo["cit-EbdForm"])
         
 
         // make the generated xml look nice (needed, zotero won't accept it otherwise)
@@ -512,6 +276,10 @@ function main() {
         element.click();
 
         document.body.removeChild(element);
+
+        // set the style to the preview style
+        
+        
     });
     document.getElementById('Uebernehmen-btn').addEventListener('click', function () {
         const bibInfo = fetchStylingInfo("bib-")

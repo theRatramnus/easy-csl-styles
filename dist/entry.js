@@ -7,10 +7,11 @@ class Entry extends HTMLElement {
         textarea {
             font-size: 120%;
         }
+    height: 150px;
       </style>
       <div>
         <h3></h3>
-        <textarea rows="3" cols="100"></textarea>
+        <textarea cols="75" rows="3"></textarea>
       </div>
     `;
         this.labelElement = this.shadowRoot.querySelector('h3');

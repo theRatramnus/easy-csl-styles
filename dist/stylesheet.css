@@ -1,11 +1,14 @@
 body {
     font-size: 100%;
     font-family: "Helvetica Neue", Arial, sans-serif;
-    background-color: rgb(225, 227, 236);
+    /*background-color: rgb(225, 227, 236);*/
     color: black;
-    margin: 100
+    margin: 100;
+    box-sizing: border-box;
     
   }
+
+
   button {
     padding: 16px 42px;
     box-shadow: 0px 0px 12px -2px rgba(0,0,0,0.5);
@@ -27,4 +30,40 @@ input, textarea {
       transition: all 0.2s
 } 
 
-  
+/* Container for the columns */
+.container {
+  display: flex;
+  height: 100%;
+}
+
+.column {
+  padding: 20px;
+  -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/* Style for the left column */
+.column:nth-child(1) {
+  width: 70%;
+  background-color: rgb(255, 255, 255);
+  /* Light orange */
+}
+
+/* Style for the right column */
+.column:nth-child(2) {
+  background-color: rgb(255, 255, 255);
+  /* Light blue */
+  width: 30%;
+}
+
+/* Style for the input and output items */
+.input-item,
+.output-item {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  height: 150px;
+  width: 100%;
+  /* Set a fixed height for alignment */
+}

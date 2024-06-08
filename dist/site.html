@@ -12,49 +12,53 @@
 <body>
   <script src="main.js"></script>
   
-  <h1>CSL Style Editor</h1>
-  <p>Bitte verändern Sie die bibliographischen Angaben in den Feldern so, wie Sie es wünschen. Behalten Sie dabei die
-    Titel der Variablen bei, die in spitzen Klammern stehen.</p>
-  <p>Eckige Klammern stehen um Vorname und Nachname von Autoren und Herausgebern. Die Reihenfolge von Vor- und Nachnamen
-    kann natürlich getauscht werden. Bitte setzen Sie aber KEIN Komma und KEINE Leerstelle zwischen die
-    Namensbestandteile, auch dann nicht, wenn Sie den Nachnamen vor den Vornamen ziehen. Diese Zeichen werden
-    automatisch ergänzt!</p>
-  <p>Sie können Angaben formatieren: Bitte schreiben Sie dazu die Abkürzung für die Formatierung in runden Klammern
-    unmittelbar hinter die Variable, noch <em>innerhalb</em> der spitzen Klammern:</p>
-  <p>(i) = kursiv – (b) = fett – (sc) = Kapitälchen</p>
-  <p>In geschweiften Klammern stehen diejenigen Teile, die nur angezeigt werden, sofern es sie auch gibt – zum Beispiel
-    Reihentitel und Angaben zur Auflage.</p>
-  <p><em>Außer bei den Angaben zu Namen von Autoren und Herausgebern achten Sie bitte genau darauf, wo Leerzeichen
+  <div>
+    <h1>CSL Style Editor</h1>
+    <p>Bitte verändern Sie die bibliographischen Angaben in den Feldern so, wie Sie es wünschen. Behalten Sie dabei die
+      Titel der Variablen bei, die in spitzen Klammern stehen.</p>
+    <p>Eckige Klammern stehen um Vorname und Nachname von Autoren und Herausgebern. Die Reihenfolge von Vor- und Nachnamen
+      kann natürlich getauscht werden. Bitte setzen Sie aber KEIN Komma und KEINE Leerstelle zwischen die
+      Namensbestandteile, auch dann nicht, wenn Sie den Nachnamen vor den Vornamen ziehen. Diese Zeichen werden
+      automatisch ergänzt!</p>
+    <p>Sie können Angaben formatieren: Bitte schreiben Sie dazu die Abkürzung für die Formatierung in runden Klammern
+      unmittelbar hinter die Variable, noch <em>innerhalb</em> der spitzen Klammern:</p>
+    <p>(i) = kursiv – (b) = fett – (sc) = Kapitälchen</p>
+    <p>In geschweiften Klammern stehen diejenigen Teile, die nur angezeigt werden, sofern es sie auch gibt – zum Beispiel
+      Reihentitel und Angaben zur Auflage.</p>
+    <p><em>Außer bei den Angaben zu Namen von Autoren und Herausgebern achten Sie bitze genau darauf, wo Leerzeichen
       stehen sollen – und wo nicht. Die Leerzeichen werden exakt mit übernommen!</em></p>
+  </div>
+<div class="container">
+  <div class="column">
+    <h2>I. Für die Bibliographie</h2>
 
-  <h2>I. Für die Bibliographie</h2>
+    <entry-field class="input-item" label="1. Monographie" id="bib-book" name="book"
+      value="[Autor<Vorname><Name(sc)>], <Titel(i)>{ (<Reihentitel>}{, <Bd.-Nr.>)}, <Ort>: <Verlagsname>, {<Auflage>, }<Jahr>"></entry-field>
 
-  <entry-field label="1. Monographie" id="bib-book" name="book"
-    value="[Autor<Vorname><Name(sc)>], <Titel(i)>{ (<Reihentitel>}{, <Bd.-Nr.>)}, <Ort>: <Verlagsname>, {<Auflage>, }<Jahr>"></entry-field>
+    <entry-field class="input-item" label="2. Aufsatz in einer Zeitschrift" id="bib-article" name="article"
+      value="[Autor<Vorname><Name(sc)>], <Titel>, in: <Zeitschrift(i)> <Bd.-Nr.> (<Jahr>), S. <Seitenzahlen>"></entry-field>
 
-  <entry-field label="2. Aufsatz in einer Zeitschrift" id="bib-article" name="article"
-    value="[Autor<Vorname><Name(sc)>], <Titel>, in: <Zeitschrift(i)> <Bd.-Nr.> (<Jahr>), S. <Seitenzahlen>"></entry-field>
+    <entry-field class="input-item" label="3. Aufsatz in einem Sammelband" id="bib-chapter" name="chapter"
+      value="[Autor<Vorname><Name(sc)>], <Titel>, in: [Herausgeber<Vorname><Name>] (Hg.), <Bandtitel(i)>{ (<Reihentitel>}{, <Bd.-Nr.>)}, <Ort>: <Verlagsname>, {<Auflage>, }<Jahr>, S. <Seitenzahlen>"></entry-field>
 
-  <entry-field label="3. Aufsatz in einem Sammelband" id="bib-chapter" name="chapter"
-    value="[Autor<Vorname><Name(sc)>], <Titel>, in: [Herausgeber<Vorname><Name>] (Hg.), <Bandtitel(i)>{ (<Reihentitel>}{, <Bd.-Nr.>)}, <Ort>: <Verlagsname>, {<Auflage>, }<Jahr>, S. <Seitenzahlen>"></entry-field>
+    <entry-field class="input-item" label="4. Lexikonartikel" id="bib-encyclopedia-entry" name="encyclopedia-entry-field"
+      value="[Autor<Vorname><Name(sc)>], Art. <Titel>, in: <Lexikon(i)> <Bd.-Nr.> (<Jahr>), Sp. <Seitenzahlen>" ></entry-field>
 
-  <entry-field label="4. Lexikonartikel" id="bib-encyclopedia-entry" name="encyclopedia-entry-field"
-    value="[Autor<Vorname><Name(sc)>], Art. <Titel>, in: <Lexikon(i)> <Bd.-Nr.> (<Jahr>), Sp. <Seitenzahlen>"></entry-field>
+    <entry-field class="input-item" label="5. Zeitungsartikel" id="bib-article-newspaper" name="encyclopedia-entry-field"
+      value="{[Autor<Name>], }<Titel>, ed. [Editor<Vorname><Name(sc)>] (<Zeitschrift> <Bd.-Nr.>), <Ort> <Jahr>, S. <Seitenzahlen>"></entry-field>
+
+    <h3>5. Trennzeichen bei mehreren Autoren</h3>
+    <input type="text" name="delimiter" id="bib-delimiter" size="5" value=", ">
+
+    <h3>6. et al. ab wieviel Autoren</h3>
+    <input type="text" name="et al.-number" id="bib-etal" size="5" value="4">
+
+    <h3>7. et al.-Label</h3>
+    <input type="text" name="et al.-label" id="bib-etalLabel" size="5" value="et al.">
+
+    <h3>8. Vornamen abkürzen</h3>
+    <input type="checkbox" name="Abkuerzung" id="bib-AutorGekuerzt" value="false" unchecked>
   
-  <entry-field label="4. Lexikonartikel" id="bib-encyclopedia-entry" name="encyclopedia-entry-field"
-        value="[Autor<Vorname><Name(sc)>], Art. <Titel>, in: <Lexikon(i)> <Bd.-Nr.> (<Jahr>), Sp. <Seitenzahlen>"></entry-field>
-
-  <h3>5. Trennzeichen bei mehreren Autoren</h3>
-  <input type="text" name="delimiter" id="bib-delimiter" size="5" value=", ">
-
-  <h3>6. et al. ab wieviel Autoren</h3>
-  <input type="text" name="et al.-number" id="bib-etal" size="5" value="4">
-
-  <h3>7. et al.-Label</h3>
-  <input type="text" name="et al.-label" id="bib-etalLabel" size="5" value="et al.">
-
-  <h3>8. Vornamen abkürzen</h3>
-  <input type="checkbox" name="Abkuerzung" id="bib-AutorGekuerzt" value="false" unchecked>
 
   <h2>II. Für die Fußnoten</h2>
   <button id="Uebernehmen-btn">aus Bibliographie übernehmen</button>
@@ -75,8 +79,8 @@
   <entry-field label="4. Lexikonartikel" id="cit-encyclopedia-entry" name="encyclopedia-entry-field"
     value="[Autor<Vorname><Name(sc)>], <Titel>, in: <Lexikon(i)> <Bd.-Nr.> (<Jahr>), Sp. <Seitenzahlen>"></entry-field>
 
-  <entry-field label="4. Lexikonartikel" id="cit-encyclopedia-entry" name="encyclopedia-entry-field"
-    value="[Autor<Vorname><Name(sc)>], <Titel>, in: <Lexikon(i)> <Bd.-Nr.> (<Jahr>), Sp. <Seitenzahlen>"></entry-field>
+  <entry-field label="5. Zeitungsartikel" id="cit-article-newspaper" name="encyclopedia-entry-field"
+        value="{[Autor<Name>], }<Titel>, ed. [Editor<Vorname><Name(sc)>] (<Zeitschrift> <Bd.-Nr.>), <Ort> <Jahr>, S. <Seitenzahlen>"></entry-field>
 
   <h3>5. Trennzeichen bei mehreren Autoren</h3>
   <input type="text" name="delimiter" id="cit-delimiter" size="5" value=", ">
@@ -98,6 +102,16 @@
   <p>Ebd.-Form</p>
   <input type="text" name="Ebd.-Form" id="cit-EbdForm" size="100" value="ibid.">
 
+  </div>
+  <div class="column" id="preview">
+    <h2>Vorschau</h2>
+    <p class="output-item" id="preview-bib-book">book</p>
+    <p class="output-item" id="preview-bib-article">article</p>
+    <p class="output-item" id="preview-bib-chapter">chapter</p>
+    <p class="output-item" id="preview-bib-encyclopedia-entry">bib-encyclopedia-entry</p>
+    <p class="output-item" id="preview-bib-article-newspaper">bib-article-newspaper</p>
+  </div>
+</div>
   <h2>III. Angaben zum Style</h2>
   <p>Autor:in:</p>
   <input type="text" name="AutorDesStyles" id="AutorDesStyles" size="100" value="Autor:in">

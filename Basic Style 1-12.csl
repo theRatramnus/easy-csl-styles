@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="note" version="1.0" demote-non-dropping-particle="never" default-locale="de">
+    <info>
+        <locale xml:lang="de">
+            <terms>
+                <term name="et-al">undefined</term>
+                <term name="ibid">ibid.</term>
+                <term name="retrieved">zugegriffen am</term>
+                <term name="accessed">Zugriff:</term>
+            </terms>
+        </locale>
+        <title>Basic Style 1</title>
+        <id>DiesIstEineID</id>
+        <author>
+            <name>Basic Style 1</name>
+        </author>
+        <contributor>
+            <name>Ludwig Patzold</name>
+        </contributor>
+        <summary>null</summary>
+        <published>2024</published>
+        <updated>2024-06-03T14:58:11+00:00</updated>
+        <category/>
+    </info>
+    <!--#############Hier steht die Zitation in den Fußnoten/-->
+    <citation>
+        <layout>
+            <choose>
+                <if match="all" position="first">
+                    <choose>
+                        <if type="book" match="any">
+                            <names variable="author">
+                                <name delimiter=", " et-al-min="4" et-al-use-first="1">
+                                    <name-part name="given"/>
+                                    <name-part name="family" font-variant="small-caps"/>
+                                </name>
+                            </names>
+                            <text value=", "/>
+                            <text variable="title" font-style="italic"/>
+                            <choose>
+                                <if variable="collection-title" match="any">
+                                    <text value=" ("/>
+                                    <text variable="collection-title"/>
+                                </if>
+                            </choose>
+                            <choose>
+                                <if variable="volume" match="any">
+                                    <text value=", "/>
+                                    <text variable="volume"/>
+                                    <text value=")"/>
+                                </if>
+                            </choose>
+                            <text value=", "/>
+                            <text variable="publisher-place"/>
+                            <text value=": "/>
+                            <text variable="publisher"/>
+                            <text value=", "/>
+                            <choose>
+                                <if variable="edition" match="any">
+                                    <text variable="edition"/>
+                                    <text value=", "/>
+                                </if>
+                            </choose>
+                            <date date-parts="year" form="text" variable="issued"/>
+                        </if>
+                    </choose>
+                    <choose>
+                        <if type="article-journal" match="any">
+                            <names variable="author">
+                                <name delimiter=", " et-al-min="4" et-al-use-first="1">
+                                    <name-part name="given"/>
+                                    <name-part name="family" font-variant="small-caps"/>
+                                </name>
+                            </names>
+                            <text value=", "/>
+                            <text variable="title"/>
+                            <text value=", in: "/>
+                            <text variable="container-title" font-style="italic"/>
+                            <text value=" "/>
+                            <text variable="volume"/>
+                            <text value=" ("/>
+                            <date date-parts="year" form="text" variable="issued"/>
+                            <text value="), S. "/>
+                            <text variable="page"/>
+                        </if>
+                    </choose>
+                    <choose>
+                        <if type="chapter" match="any">
+                            <names variable="author">
+                                <name delimiter=", " et-al-min="4" et-al-use-first="1">
+                                    <name-part name="given"/>
+                                    <name-part name="family" font-variant="small-caps"/>
+                                </name>
+                            </names>
+                            <text value=", "/>
+                            <text variable="title"/>
+                            <text value=", in: "/>
+                            <names variable="editor">
+                                <name delimiter=", " et-al-min="4" et-al-use-first="1">
+                                    <name-part name="given"/>
+                                    <name-part name="family"/>
+                                </name>
+                            </names>
+                            <text value=" (Hg.), "/>
+                            <text variable="container-title" font-style="italic"/>
+                            <choose>
+                                <if variable="collection-title" match="any">
+                                    <text value=" ("/>
+                                    <text variable="collection-title"/>
+                                </if>
+                            </choose>
+                            <choose>
+                                <if variable="volume" match="any">
+                                    <text value=", "/>
+                                    <text variable="volume"/>
+                                    <text value=")"/>
+                                </if>
+                            </choose>
+                            <text value=", "/>
+                            <text variable="publisher-place"/>
+                            <text value=": "/>
+                            <text variable="publisher"/>
+                            <text value=", "/>
+                            <choose>
+                                <if variable="edition" match="any">
+                                    <text variable="edition"/>
+                                    <text value=", "/>
+                                </if>
+                            </choose>
+                            <date date-parts="year" form="text" variable="issued"/>
+                            <text value=", S. "/>
+                            <text variable="page"/>
+                        </if>
+                    </choose>
+                    <choose>
+                        <if type="encyclopedia-entry" match="any">
+                            <text value="undefined"/>
+                        </if>
+                    </choose>
+                    <choose>
+                        <if type="article-newspaper" match="any">
+                            <choose>
+                                <if variable="author" match="any">
+                                    <names variable="author">
+                                        <name delimiter=", " et-al-min="4" et-al-use-first="1" name-as-sort-order="first" form="short">
+                                            <name-part name="family"/>
+                                        </name>
+                                    </names>
+                                </if>
+                            </choose>
+                            <text variable="title"/>
+                            <text value=", ed. "/>
+                            <names variable="contributor">
+                                <name delimiter=", " et-al-min="4" et-al-use-first="1">
+                                    <name-part name="given"/>
+                                    <name-part name="family" font-variant="small-caps"/>
+                                </name>
+                            </names>
+                            <text value=" ("/>
+                            <text variable="container-title"/>
+                            <text value=" "/>
+                            <text variable="volume"/>
+                            <text value="), "/>
+                            <text variable="publisher-place"/>
+                            <text value=" "/>
+                            <date date-parts="year" form="text" variable="issued"/>
+                            <text value=", S. "/>
+                            <text variable="page"/>
+                        </if>
+                    </choose>
+                </if>
+            </choose>
+            <choose>
+                <if match="any" position="ibid">
+                    <text term="ibid"/>
+                </if>
+                <else>
+                    <choose>
+                        <if match="any" position="subsequent">
+                            <names variable="author">
+                                <name delimiter=", " et-al-min="4" et-al-use-first="1" name-as-sort-order="first" form="short">
+                                    <name-part name="family" font-variant="small-caps"/>
+                                </name>
+                            </names>
+                            <text value=", "/>
+                            <text variable="title" form="short"/>
+                        </if>
+                    </choose>
+                    <choose>
+                        <if variable="first-reference-note-number">
+                            <text value=" (wie Anm. "/>
+                            <text variable="first-reference-note-number"/>
+                            <text value=")"/>
+                        </if>
+                    </choose>
+                </else>
+            </choose>
+        </layout>
+    </citation>
+    <!--#############Hier beginnt die Bibliographie/-->
+    <bibliography>
+        <layout>
+            <!--##############Hier beginnen die Angaben zum Buch/-->
+            <choose>
+                <if type="book" match="any">
+                    <names variable="author">
+                        <name delimiter=", " et-al-min="4" et-al-use-first="1">
+                            <name-part name="given"/>
+                            <name-part name="family" font-variant="small-caps"/>
+                        </name>
+                    </names>
+                    <text value=", "/>
+                    <text variable="title" font-style="italic"/>
+                    <choose>
+                        <if variable="collection-title" match="any">
+                            <text value=" ("/>
+                            <text variable="collection-title"/>
+                        </if>
+                    </choose>
+                    <choose>
+                        <if variable="volume" match="any">
+                            <text value=", "/>
+                            <text variable="volume"/>
+                            <text value=")"/>
+                        </if>
+                    </choose>
+                    <text value=", "/>
+                    <text variable="publisher-place"/>
+                    <text value=": "/>
+                    <text variable="publisher"/>
+                    <text value=", "/>
+                    <choose>
+                        <if variable="edition" match="any">
+                            <text variable="edition"/>
+                            <text value=", "/>
+                        </if>
+                    </choose>
+                    <date date-parts="year" form="text" variable="issued"/>
+                </if>
+            </choose>
+            <!--###############Hier beginnt der Zeitschriftenartikel/-->
+            <choose>
+                <if type="article-journal" match="any">
+                    <names variable="author">
+                        <name delimiter=", " et-al-min="4" et-al-use-first="1">
+                            <name-part name="given"/>
+                            <name-part name="family" font-variant="small-caps"/>
+                        </name>
+                    </names>
+                    <text value=", "/>
+                    <text variable="title"/>
+                    <text value=", in: "/>
+                    <text variable="container-title" font-style="italic"/>
+                    <text value=" "/>
+                    <text variable="volume"/>
+                    <text value=" ("/>
+                    <date date-parts="year" form="text" variable="issued"/>
+                    <text value="), S. "/>
+                    <text variable="page"/>
+                </if>
+            </choose>
+            <!--###############Hier beginnt der Artikel im Sammelband/-->
+            <choose>
+                <if type="chapter" match="any">
+                    <names variable="author">
+                        <name delimiter=", " et-al-min="4" et-al-use-first="1">
+                            <name-part name="given"/>
+                            <name-part name="family" font-variant="small-caps"/>
+                        </name>
+                    </names>
+                    <text value=", "/>
+                    <text variable="title"/>
+                    <text value=", in: "/>
+                    <names variable="editor">
+                        <name delimiter=", " et-al-min="4" et-al-use-first="1">
+                            <name-part name="given"/>
+                            <name-part name="family"/>
+                        </name>
+                    </names>
+                    <text value=" (Hg.), "/>
+                    <text variable="container-title" font-style="italic"/>
+                    <choose>
+                        <if variable="collection-title" match="any">
+                            <text value=" ("/>
+                            <text variable="collection-title"/>
+                        </if>
+                    </choose>
+                    <choose>
+                        <if variable="volume" match="any">
+                            <text value=", "/>
+                            <text variable="volume"/>
+                            <text value=")"/>
+                        </if>
+                    </choose>
+                    <text value=", "/>
+                    <text variable="publisher-place"/>
+                    <text value=": "/>
+                    <text variable="publisher"/>
+                    <text value=", "/>
+                    <choose>
+                        <if variable="edition" match="any">
+                            <text variable="edition"/>
+                            <text value=", "/>
+                        </if>
+                    </choose>
+                    <date date-parts="year" form="text" variable="issued"/>
+                    <text value=", S. "/>
+                    <text variable="page"/>
+                </if>
+            </choose>
+            <!--###############Hier beginnt der Lexikoneintrag/-->
+            <choose>
+                <if type="entry-encyclopedia" match="any">
+                    <text value="undefined"/>
+                </if>
+            </choose>
+            <!--###############Hier beginnt der Zeitungsartikel/-->
+            <choose>
+                <if type="entry-encyclopedia" match="any">
+                    <choose>
+                        <if variable="author" match="any">
+                            <names variable="author">
+                                <name delimiter=", " et-al-min="4" et-al-use-first="1" name-as-sort-order="first" form="short">
+                                    <name-part name="family"/>
+                                </name>
+                            </names>
+                        </if>
+                    </choose>
+                    <text variable="title"/>
+                    <text value=", ed. "/>
+                    <names variable="contributor">
+                        <name delimiter=", " et-al-min="4" et-al-use-first="1">
+                            <name-part name="given"/>
+                            <name-part name="family" font-variant="small-caps"/>
+                        </name>
+                    </names>
+                    <text value=" ("/>
+                    <text variable="container-title"/>
+                    <text value=" "/>
+                    <text variable="volume"/>
+                    <text value="), "/>
+                    <text variable="publisher-place"/>
+                    <text value=" "/>
+                    <date date-parts="year" form="text" variable="issued"/>
+                    <text value=", S. "/>
+                    <text variable="page"/>
+                </if>
+            </choose>
+        </layout>
+    </bibliography>
+</style>
