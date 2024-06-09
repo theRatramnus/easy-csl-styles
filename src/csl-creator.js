@@ -34,7 +34,7 @@ const cslDictionary = {
     "Verlagsname": "publisher",
     "Auflage": "edition",
     "Seitenzahlen": "page",
-    "Editor": "collection-editor",
+    "Editor": "contributor",
     "Kurztitel": {
         type: "variable",
         content: `variable="title" form="short"`

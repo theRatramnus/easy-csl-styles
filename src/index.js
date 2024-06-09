@@ -310,7 +310,7 @@ async function main() {
 
 
     });
-    document.getElementById('updateCitables-btn').addEventListener('click', function(event) {
+   document.getElementById('fileInput').addEventListener('change', function(event) {
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
             if (file) {

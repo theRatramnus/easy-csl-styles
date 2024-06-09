@@ -28,6 +28,9 @@ export class CSLEngine {
         this.citeproc = new CSL.Engine(this, this.sytle);
     }
     updateItems(citationData) {
+        this.allItemIDs = [];
+        this.typeLookup = {};
+        this.citations = {};
         for (var i = 0, ilen = citationData.length; i < ilen; i++) {
             var item = citationData[i];
             if (!item.issued) continue;
