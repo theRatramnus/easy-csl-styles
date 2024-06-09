@@ -55,10 +55,13 @@ export class CSLEngine {
     }
     createBibliography(itemIDs) {
         this.citeproc.updateItems(itemIDs);
-        return this.citeproc.makeBibliography()[1];
+        return this.citeproc.makeBibliography();
     }
     previewType(type) {
-        return this.createBibliography([this.typeLookup[type]]);
+        if (!this.typeLookup[type]) return "type not found";
+        const bibliography = this.createBibliography([this.typeLookup[type]]);
+        console.log("created bibliography for", type, bibliography[0]);
+        return bibliography[1];
     }
 }
 /*

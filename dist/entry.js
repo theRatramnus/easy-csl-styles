@@ -44,8 +44,9 @@ class Entry extends HTMLElement {
         if (name === 'value' && oldValue !== newValue) {
             this.textareaElement.value = newValue;
         }
-        console.warn("Attribute changed: ", name, oldValue, newValue, this.textareaElement.value)
+        this.dispatchEvent(new CustomEvent('value-changed', {}));
     }
+    
 }
 
 customElements.define('entry-field', Entry);

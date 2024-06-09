@@ -209,6 +209,60 @@ function fetchStylingInfo(prefix) {
     return { ...fetchInfo(ids, true), shortenNames: document.getElementById(prefix + 'AutorGekuerzt').checked }
 }
 
+function buildStyle() {
+    const generalInfo = fetchGeneralInfo()
+    const bibInfo = fetchStylingInfo("bib-")
+    const citInfo = fetchStylingInfo("cit-")
+        
+    // Using the results array to create the text
+    const styleTitle = generalInfo["NameDesStyles"]
+
+        
+
+    //createCitation(book, article_journal, chapter, entry_encyclopedia, subsequent)
+    function setCSLParameters(info) {
+        setCreatorParameters(info["delimiter"], info["etal"], info.shortenNames)
+    }
+    setCSLParameters(citInfo);
+
+    const createStyleCSL = (obj) => {
+        return {
+            book: createCSL(obj["book"]),
+            article: createCSL(obj["article"]),
+            chapter: createCSL(obj["chapter"]),
+            entry_encyclopedia: createCSL(obj["encyclopedia-entry"]),
+            article_newspaper: createCSL(obj["article-newspaper"])
+        }
+    }
+    const citCSL = createStyleCSL(citInfo)
+        
+    setShortenNames(document.getElementById("cit-KurzzitatAbkuerzung").checked);
+    const kurzzitat = createCSL(document.getElementById("cit-Kurzzitat").value)
+        
+
+
+    const citation = createCitation(citCSL.book, citCSL.article, citCSL.chapter, citCSL.entry_encyclopedia, citCSL.article_newspaper, kurzzitat, createCSL(document.getElementById("cit-Querverweis").value))
+
+    //console.log(citation)
+
+
+
+    setCSLParameters(bibInfo)
+
+    const bibCSL = createStyleCSL(bibInfo)
+
+    let text = createStyle(styleTitle, generalInfo["IDDesStyles"], generalInfo["NameDesStyles"], generalInfo["BeschreibungdesStyles"], getCurrentYear(), getCurrentXMLTimestamp(), bibCSL.book, bibCSL.article, bibCSL.chapter, bibCSL.entry_encyclopedia, bibCSL.article_newspaper, generalInfo["etalLabel"], citation, generalInfo["cit-EbdForm"])
+        
+
+    // make the generated xml look nice (needed, zotero won't accept it otherwise)
+    var convert = require('xml-js');
+    const convertOptions = { compact: false, spaces: 4 }
+    var jsonRepresentation = convert.xml2json(text, convertOptions);
+    text = convert.json2xml(jsonRepresentation, convertOptions);
+
+    return text
+}
+
 
 async function main() {
 
@@ -216,56 +270,8 @@ async function main() {
 
 
     document.getElementById('btn').addEventListener('click', function () {
-        const generalInfo = fetchGeneralInfo()
-        const bibInfo = fetchStylingInfo("bib-")
-        const citInfo = fetchStylingInfo("cit-")
+        const text = buildStyle();
         
-        // Using the results array to create the text
-        const styleTitle = generalInfo["NameDesStyles"]
-
-        
-
-        //createCitation(book, article_journal, chapter, entry_encyclopedia, subsequent)
-        function setCSLParameters(info) {
-            setCreatorParameters(info["delimiter"], info["etal"], info.shortenNames)            
-        }
-        setCSLParameters(citInfo);
-
-        const createStyleCSL = (obj) => {
-            return {
-                book: createCSL(obj["book"]),
-                article: createCSL(obj["article"]),
-                chapter: createCSL(obj["chapter"]),
-                entry_encyclopedia: createCSL(obj["entry-encyclopedia"]),
-                article_newspaper: createCSL(obj["article-newspaper"])
-            }
-        }
-        const citCSL = createStyleCSL(citInfo)
-        
-        setShortenNames(document.getElementById("cit-KurzzitatAbkuerzung").checked);
-        const kurzzitat = createCSL(document.getElementById("cit-Kurzzitat").value)
-        
-
-
-        const citation = createCitation(citCSL.book, citCSL.article, citCSL.chapter, citCSL.entry_encyclopedia, citCSL.article_newspaper, kurzzitat, createCSL(document.getElementById("cit-Querverweis").value))
-
-        //console.log(citation)
-
-
-
-        setCSLParameters(bibInfo)
-
-        const bibCSL = createStyleCSL(bibInfo)
-
-        let text = createStyle(styleTitle, generalInfo["IDDesStyles"], generalInfo["NameDesStyles"], generalInfo["BeschreibungdesStyles"], getCurrentYear(), getCurrentXMLTimestamp(), bibCSL.book, bibCSL.article, bibCSL.chapter, bibCSL.entry_encyclopedia, bibCSL.article_newspaper, generalInfo["etalLabel"], citation, generalInfo["cit-EbdForm"])
-        
-
-        // make the generated xml look nice (needed, zotero won't accept it otherwise)
-        var convert = require('xml-js');
-        const convertOptions = {compact: false, spaces: 4}
-        var jsonRepresentation = convert.xml2json(text, convertOptions);
-        text = convert.json2xml(jsonRepresentation, convertOptions);
-
         // update the preview engine
         previewEngine.updateStyle(text);
 
@@ -282,6 +288,8 @@ async function main() {
         element.click();
 
         document.body.removeChild(element);
+
+        updatePreview(previewEngine);
 
         // set the style to the preview style
         
@@ -315,7 +323,41 @@ async function main() {
             } else {
                 console.log('No file selected');
             }
-        });
+    });
+    getAllElementsByTag("ENTRY-FIELD").filter((element) => element.id.includes("bib-")).forEach((element) => {
+        element.addEventListener("value-changed", (event) => {
+            const style = buildStyle();
+            previewEngine.updateStyle(style);
+            updatePreview(previewEngine);
+        })
+    })
+}
+
+function updatePreview(previewEngine) {
+    console.log("Updating preview...");
+    const preview = document.getElementById("preview");
+    console.log(preview)
+    console.log(preview.children)
+    for (const child of preview.children) {
+        console.log(child.tagName)
+        if (child.tagName === "DIV") {
+            const type = child.id.substring(12, child.id.length);
+            console.log("Updating preview type:", type);
+            child.innerHTML = previewEngine.previewType(type);
+            console.log("Updated preview type:", type, child.innerHTML);
+        }
+    }
+    console.log("Updated preview.");
+}
+
+function getAllElementsByTag(tagName) {
+  // Use document.getElementsByTagName to get a collection of all elements with the specified tag name
+  const elements = document.getElementsByTagName(tagName);
+  
+  // Convert the HTMLCollection to an array
+  const elementsArray = Array.from(elements);
+  
+  return elementsArray;
 }
 
 

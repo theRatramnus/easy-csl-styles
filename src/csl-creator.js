@@ -85,7 +85,7 @@ function parsePlaceholdersAndText(text) {
             matches.push({ content: match[2], type: 'text', styling: null });
           //  console.log(match[2])
             if (match[2].includes("<")) {
-                console.warn("Found < in ", match[2])
+                console.warn("Found < in ", match[2])      
             }
         }
     }
@@ -161,9 +161,15 @@ function parseNestedPlaceholders(content) {
     }
     // Check if there is any remaining text after the last match
     if (lastIndex < content.length) {
+        const textCandidate = content.substring(lastIndex);
         // Add the remaining text as type 'text'
-        if (!content.substring(lastIndex).includes("<")) {
-            results.push({ content: content.substring(lastIndex), type: 'text', styling: null });
+        if (!textCandidate.includes("<")) {
+            results.push({ content: textCandidate, type: 'text', styling: null });
+        } else {
+            const newCandidate = textCandidate.split("]")[1]
+            if(!newCandidate.includes("<")) {
+                results.push({ content: newCandidate, type: 'text', styling: null });
+            }
         }
     }
     // Return the results array if it is not empty, otherwise return the original content
